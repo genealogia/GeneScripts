@@ -1,5 +1,7 @@
 FS_resources_dump/tmp
 FS_resources_dump/tmp_backup
 PTHER_dumper/tmpfile*
+PTHER_dumper/errors_*
+PTHER_dumper/images_*
 .project
 .pydevproject

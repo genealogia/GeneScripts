@@ -11,10 +11,12 @@ echo "Lista plikow zapisana bedzie w $CD_FILES";
 echo "Lista bledow bedzie w $CD_ERRORS";
 echo "";
 
+MYWGET="wget -nv -T7 -t0 -w10 "
+
 for EP in $EPS; do
 	echo "[i] $EP";
 	url="http://www.pther.net/Plockie/$EP/index.html"
-	wget $url -O tmpfile -nv -T 7
+	$MYWGET $url -O tmpfile
 	grep Index.html tmpfile | sed -e 's/.*href..//g' | sed -e 's/".*//g' > tmpfile2
 	for SYGNATURA in `cat tmpfile2`; do
 		
@@ -28,7 +30,7 @@ for EP in $EPS; do
 		echo "";
 		echo "[i] $EP $SYGNATURA";
 		url2="http://www.pther.net/Plockie/$EP/$SYGNATURA"
-		wget $url2 -O tmpfile3 -nv -T 7;
+		$MYWGET $url2 -O tmpfile3;
 		res=$?
 		if [ "0" == "$res" ]; then
 			cat tmpfile3 | sed -e 's/ /\n/g' | grep Index00 | sed -e 's/.*href..//g' | sed -e 's/".*//g' | sort -r > tmpfile4
@@ -36,7 +38,7 @@ for EP in $EPS; do
 				url3=`echo $url2 | sed -e "s/Index.html/$LAST/g"`
 				url3dir=`echo $url2 | sed -e "s/Index.html//g"`
 				echo "[i] Pobieram $LAST";
-				wget $url3 -O tmpfile5 -nv -T 7;
+				$MYWGET $url3 -O tmpfile5;
 				res=$?
 				if [ "0" == "$res" ]; then
 					echo "[+] znaleziono!";
@@ -50,11 +52,21 @@ for EP in $EPS; do
 				
 				FILE_LAST_ID=`echo "$FILE_LAST" | sed -e 's/_/ /g' | awk '{print $5}'`
 				FILE_LAST_PREFIX=`echo "$FILE_LAST" | sed -e "s/$FILE_LAST_ID.*//g"`
-				echo "seq 1 $FILE_LAST_ID";
+				echo "[i] seq 1 $FILE_LAST_ID";
 				for ID in `seq 1 $FILE_LAST_ID`; do
 					IDZ=$(printf "%04d" $ID)
 					echo $url3dir$FILE_LAST_PREFIX$IDZ".jpg" >> $CD_FILES;
 				done
+				
+				# te pliki z poczatku jeszcze
+				for ID in $FILES; do
+					FILE_NAME=`echo $ID | sed -e 's/_jpg/.jpg/g'`
+					if [ "" == "`grep $FILE_NAME $CD_FILES`" ]; then
+						echo "[i] seq add $FILE_NAME";
+						echo $url3dir$FILE_NAME >> $CD_FILES;
+					fi
+				done
+				
 			else
 				echo "[-] zonk, brak ostatniej strony $EP/$SYGNATURA";
 				echo "[-] zonk, brak ostatniej strony $EP/$SYGNATURA" >> $CD_ERRORS;
