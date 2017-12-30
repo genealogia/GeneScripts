@@ -1,0 +1,5 @@
+FS_resources_dump/tmp
+FS_resources_dump/tmp_backup
+PTHER_dumper/tmpfile*
+.project
+.pydevproject
