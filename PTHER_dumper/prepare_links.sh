@@ -56,6 +56,10 @@ for EP in $EPS; do
 				FILES=`cat tmpfile3  | grep PL_ | grep jpg | grep -v tn_ | sed -e 's/.*href..//g' | sed -e 's/.html.*//g' | sort | uniq | grep ^PL | grep -v _9999`;
 				
 				FILE_LAST_ID=`echo "$FILE_LAST" | sed -e 's/_/ /g' | awk '{print $5}'`
+				if [ "$FILE_LAST_ID" == "jpg" ]; then
+					# czasem w plikach jest 1 segment numerow mniej
+					FILE_LAST_ID=`echo "$FILE_LAST" | sed -e 's/_/ /g' | awk '{print $4}'`
+				fi 
 				FILE_LAST_PREFIX=`echo "$FILE_LAST" | sed -e "s/$FILE_LAST_ID.*//g"`
 				echo "[i] seq 1 $FILE_LAST_ID";
 				for ID in `seq 1 $FILE_LAST_ID`; do
