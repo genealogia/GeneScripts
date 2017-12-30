@@ -41,7 +41,12 @@ for EP in $EPS; do
 				$MYWGET $url3 -O tmpfile5;
 				res=$?
 				if [ "0" == "$res" ]; then
-					echo "[+] znaleziono!";
+					echo "[+] znaleziono ostatnia strone!";
+					FILE_LAST=`cat tmpfile5  | grep PL_ | grep jpg | grep -v tn_ | sed -e 's/.*href..//g' | sed -e 's/.html.*//g' | sort -r | uniq | grep ^PL | grep -v _9999 | head -n1`;
+					if [ "$FILE_LAST" == "" ]; then
+						echo "[!] tylko na niej jest sama okladka, trzeba spr. kolejna!";
+						continue;
+					fi
 					break;
 				fi
 			done
